@@ -109,9 +109,13 @@
              class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
             All Devices
           </a>
-          <a href="#"
+          <a href="{% url 'inventory:inventory_balance_list' %}"
              class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
             Manage Inventory
+          </a>
+          <a href="{% url 'inventory:purchase_order_list' %}"
+             class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+            Purchase Orders
           </a>
         </div>
       </div>

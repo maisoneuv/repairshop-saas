@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+from corsheaders.defaults import default_headers
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +29,11 @@ SECRET_KEY = 'django-insecure-90@%t3&z8op81c8nha%nlf0$p+@kil4&p*g*&+*!y^kiz-^wh1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "repairhero.localhost",
+    "fixiit.localhost",
+    ]
 
 
 # Application definition
@@ -41,20 +47,25 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dal',
     'dal_select2',
+    'widget_tweaks',
     'core',
     'django_htmx',
     'rest_framework',
+    'corsheaders',
     'drf_spectacular',
     'crispy_forms',
     'crispy_tailwind',
     'customers',
     'service',
     'tasks',
-    'inventory'
-
+    'inventory',
+    'tenants',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'tenants.middleware.TenantMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -155,10 +166,39 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'core.User'
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
 }
 
 LOGIN_REDIRECT_URL = '/'
 
 CRISPY_TEMPLATE_PACK = 'tailwind'
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+
+# CORS_ALLOWED_ORIGINS = [
+#     'http://localhost:5173',  # React dev server
+#     'http://repairhero.localhost:5173'
+# ]
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    'http://repairhero.localhost:5173',
+    'http://fixit.localhost:5173',
+    'http://repairhero.localhost:8000',
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:5173$",
+    r"^http://.*\.localhost:5173$",
+]
+
+# SESSION_COOKIE_DOMAIN = ".localhost"
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    'x-tenant',
+]

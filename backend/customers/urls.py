@@ -1,4 +1,5 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from .views import (CustomerListView,
                     CustomerCreateView,
                     CustomerUpdateView,
@@ -7,13 +8,22 @@ from .views import (CustomerListView,
                     CustomerAssetCreateView,
                     CustomerAssetDetailView,
                     CustomerAssetUpdateView,
-                    CustomerSearchView, 
-                    customer_details,
-                    customer_phone_autocomplete,
-                    customer_email_autocomplete,
-                    customer_name_autocomplete)
+                    CustomerSearchView,
+                    CustomerPhoneSearchView,
+                    customer_search,
+                    select_customer,
+                    load_new_customer_fields,
+                    customer_create_inline,
+                    asset_create_inline,
+                    get_customer_assets,
+                    CustomerAPISearchView,
+                    get_referral_sources,
+                    CustomerViewSet)
 
 app_name = "customers"
+
+router = DefaultRouter()
+router.register(r'customers', CustomerViewSet, basename="customer")
 
 urlpatterns = [
     path('all', CustomerListView.as_view(), name="customer_list"),
@@ -24,10 +34,18 @@ urlpatterns = [
     path('asset/<pk>/', CustomerAssetDetailView.as_view(), name="asset_detail"),
     path('asset/<pk>/update', CustomerAssetUpdateView.as_view(), name="asset_update"),
     path('asset/create', CustomerAssetCreateView.as_view(), name="asset_create"),
-    # path('customer-autocomplete/', CustomerSearchView.as_view(),name='customer-autocomplete'),
-    path("api/customer-phone-autocomplete/", customer_phone_autocomplete, name="customer-phone-autocomplete"),
-    path("api/customer-email-autocomplete/", customer_email_autocomplete, name="customer-email-autocomplete"),
-    path("api/customer-name-autocomplete/", customer_name_autocomplete, name="customer-name-autocomplete"),
-    path("api/customer-details/", customer_details, name="customer-details"),
+    path('customer-autocomplete/', CustomerSearchView.as_view(),name='customer_autocomplete'),
+    path('customer-phone-autocomplete/', CustomerPhoneSearchView.as_view(),name='customer_phone_autocomplete'),
+    path('customer-search/', customer_search,name='customer_search'),
+    path('select-customer/<pk>/', select_customer, name='select_customer'),
+    path('load-new-customer-fields/', load_new_customer_fields, name='load_new_customer_fields'),
+    path('create-inline/', customer_create_inline, name='customer_create_inline'),
+    path('asset-create-inline/', asset_create_inline, name='asset_create_inline'),
+    path('customer-assets/<int:pk>/', get_customer_assets, name='customer_assets'),
+    path('api/customers/search/', CustomerAPISearchView.as_view(), name='customer-api-search'),
+    # path('api/customers/', CustomerCreateListView.as_view(), name='customer-list-create'),
+    path('api/referral-sources/', get_referral_sources, name='referral-sources'),
+    path("api/", include(router.urls)),
+
 
 ]
