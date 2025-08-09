@@ -1,0 +1,13 @@
+{% if customers %}
+    <ul>
+        {% for customer in customers %}
+            <li>
+                <strong>{{ customer.first_name }}</strong> - 
+                {{ customer.email }} - 
+                {{ customer.phone_number }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No customers found.</p>
+{% endif %}
